@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>AntAlamanac: Poor Peter's AntAlamanac</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	<link rel='stylesheet' href='{{ url_for('static', filename='fullcalendar/fullcalendar.css') }}' />
+	<script src='{{ url_for('static', filename='fullcalendar/lib/jquery.min.js') }}'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+	<script src='{{ url_for('static', filename='fullcalendar/lib/moment.min.js') }}'></script>
+	<script src='{{ url_for('static', filename='fullcalendar/fullcalendar.js') }}'></script>
+	<script>
+		$( document ).ready(function() {
+		  $('#calendar').fullCalendar({
+			defaultView: 'agendaWeek',
+			weekends: false,
+			allDaySlot: false,
+			minTime: '07:00:00',
+			maxTime: '22:00:00',
+			nowIndicator: false,
+			columnHeaderFormat: 'dddd',
+			height: 'parent'
+		  })
+		});
+	</script>
+
+    <style>
+    *{padding:0;margin:0;}
+
+	html { height: 100%; }
+
+    body{
+        font-family:Verdana, Geneva, sans-serif;
+        font-size:18px;
+        background-color:#FFF;
+        height: 100%;
+		margin: 0;
+    }
+
+
+
+    .my-float{
+        margin-top:22px;
+    }
+
+	    #search{
+			height: 100%;
+		    width: 100%;
+		    float: left;
+		    position: relative;
+	    }
+
+    #right {
+        width: 50%;
+        float: right;
+		height: 100%;
+    }
+
+    #left {
+        width: 50%;
+        height: 100%;
+        float: left;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch; /* for iOS */
+    }
+/*
+    #upper {
+        overflow: auto;
+        padding: 5px;
+    }
+
+    #upper h1 {
+        line-height: 20px;
+    }
+
+		#upper #main-nav {
+        float: left;
+    }
+
+    #upper #cal-ctrl {
+        float: right;
+    }
+		*/
+	    /* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #FFF;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #FFF;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+}
+
+/* Style the close button */
+.topright {
+    float: right;
+    cursor: pointer;
+    font-size: 28px;
+}
+
+.topright:hover {color: red;}
+
+.btn {
+  display:block;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+ background-color:#0064a4;
+	color:#ffd200;
+	border-radius:100%;
+	text-align:center;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.float{
+        position:fixed;
+        width:100px;
+        height:100px;
+        bottom:40px;
+        left:40px;
+        background-color:#0064a4;
+        color:#ffd200;
+        border-radius:100%;
+        text-align:center;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 2px 2px 3px #999;
+    }
+
+/*Andrew's CSS  */
+/*TAB CSS*/
+.leftTab {
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+.leftTab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 10px;
+ 	transition: 0.3s;
+}
+.leftTab button:hover {
+    background-color: #ddd;
+}
+.leftTab button.active {
+    background-color: #FFF;
+}
+.leftTabContent {
+	height: 94%;
+	width: 100%;
+	float: left;
+	position: relative;
+    display: none;
+    border-top: none;
+}
+
+/*days of week  */
+.weekDays-selector input {
+  display: none!important;
+}
+
+.weekDays-selector input[type=checkbox] + label {
+  display: inline-block;
+  border-radius: 6px;
+  background: #dddddd;
+  height: 40px;
+  width: 30px;
+  margin-right: 3px;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.weekDays-selector input[type=checkbox]:checked + label {
+  background: #2AD705;
+  color: #ffffff;
+}
+
+    </style>
+</head>
+
+
+
+
+<body>
+    <div id="left">
+	<!--    <h2>Scheduling</h2> -->
+      <div class="leftTab">
+        <button class="leftTabLink" onclick="openSchedule(event, 'Classes')" id="defaultOpen">Classes</button>
+  		<button class="leftTabLink" onclick="openSchedule(event, 'PersonalEvents')">Personal Events</button>
+		<button class="leftTabLink" onclick="openSchedule(event, 'CompSch')">Schedule</button>
+      </div>
+      <div id="Classes" class="leftTabContent">
+		<iframe src="{{url_for('main')}}" id="search" frameborder="0"></iframe>
+      </div>
+      <div id="PersonalEvents" class="leftTabContent">
+        <h3>Personal Events</h3>
+        <p>Add your personal events here.</p>
+        <div class="weekDays-selector">
+          <input type="checkbox" id="weekday-mon" class="weekday" />
+          <label for="weekday-mon">M</label>
+          <input type="checkbox" id="weekday-tue" class="weekday" />
+          <label for="weekday-tue">T</label>
+          <input type="checkbox" id="weekday-wed" class="weekday" />
+          <label for="weekday-wed">W</label>
+          <input type="checkbox" id="weekday-thu" class="weekday" />
+          <label for="weekday-thu">T</label>
+          <input type="checkbox" id="weekday-fri" class="weekday" />
+          <label for="weekday-fri">F</label>
+          <input type="checkbox" id="weekday-sat" class="weekday" />
+          <label for="weekday-sat">S</label>
+          <input type="checkbox" id="weekday-sun" class="weekday" />
+          <label for="weekday-sun">S</label>
+        </div>
+      </div>
+      <div id="CompSch" class="leftTabContent">
+        <h3>Schedule</h3>
+        <p>A copy of the schedules for side by side comparisons.</p>
+      </div>
+	</div>
+
+
+    <div id="right">
+	    <!--
+	    <div class="tab">
+		  <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">London</button>
+		  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+		  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+		  </div>
+
+		<div id="London" class="tabcontent">
+		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
+		  <h3>London</h3>
+		  <p>London is the capital of England.</p>
+		</div>
+
+		<div id="Paris" class="tabcontent">
+		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
+		  <h3>Paris</h3>
+		  <p>Paris is the capital of France.</p>
+		</div>
+
+		<div id="Tokyo" class="tabcontent">
+		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
+		  <h3>Tokyo</h3>
+		  <p>Tokyo is the capital of Japan.</p>
+		</div>
+      <div id="upper">
+        <div id="main-nav">
+            <h1>The AntAlmanac</h1>
+        </div>
+        <div id="cal-ctrl">
+          <button type="button" onclick="javascript:print()">Print</button>
+          <button type="button" id="save-btn">Save</button>
+          <button type="button" id="load-btn">Load</button>
+          <button type="button" id="clear-cal-btn">Clear</button>
+          <button type="button" id="resize-btn">Size</button>
+        </div>
+      </div>-->
+      <div style="height:100%;" id="calendar"></div>
+    </div>
+
+	    <a href="#login" class="float"><button type="button" id="login" class="btn">
+    LOG IN
+		</button></a>
+
+    <script>
+
+      $(document).ready(function() {
+       $('#login').on('click', function() {
+		  var username = prompt('Please enter a unique username (e.g. Student ID): ', '');
+	      if (username == ""){
+			  return;
+		  }
+		  // Save to server
+		  $.ajax({
+			url: "{{url_for('login')}}",
+			type: 'post',
+			data: {
+			  username: username,
+			},
+			success: function(data) {
+			  if(data.success) {
+			alert('Logged in!');
+			  }
+			  else {
+			alert('Not logged in! :(');
+			  }
+			}
+		  });
+		});
+
+
+      });
+
+
+		function openCity(evt, cityName) {
+			var i, tabcontent, tablinks;
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+			document.getElementById(cityName).style.display = "block";
+			evt.currentTarget.className += " active";
+		}
+
+    function openSchedule(evt, cityName) {
+        var i, leftTabContent, leftTabLink;
+        leftTabContent = document.getElementsByClassName("leftTabContent");
+        for (i = 0; i < leftTabContent.length; i++) {
+            leftTabContent[i].style.display = "none";
+        }
+        leftTabLink = document.getElementsByClassName("leftTabLink");
+        for (i = 0; i < leftTabLink.length; i++) {
+            leftTabLink[i].className = leftTabLink[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+// Get the element with id="defaultOpen" and click on it
+		document.getElementById("defaultOpen").click();
+	</script>
+</body>
+</html>
