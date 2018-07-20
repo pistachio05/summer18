@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, request, jsonify
+
 from flask_pymongo import PyMongo
 import time
 from datetime import datetime, date, timedelta
@@ -152,6 +153,7 @@ def gen_almanac_listing(dept='',ge='',num='',code=''):
 				if '199' in cur_num or (cells[2].text.isnumeric() and int(cells[2].text)>4):
 					r += 'DATA HIDDEN'
 				else:
+
 					res.append((r,mkgraph(code),js_encode(dept),cur_num))
 					r = ''
 			elif row.find('td', {'class':'CourseTitle'}) != None:
@@ -199,6 +201,7 @@ def soc():
         soup = bs.BeautifulSoup(src.read(), 'lxml')
         src.close()
         results = soup.find('div', {'class':'course-list'})
+        results = results.find('table')
         # if results != None:
         #     results = unicode(results.encode(formatter='html'))
         # else:
@@ -213,31 +216,33 @@ def main():
         listing = None
         on_edge=None
         if request.method == 'POST':
-                code = request.form['CourseCodes']
-                dept = request.form['Dept']
-                num = request.form['CourseNum']
-                ge = request.form['Breadth']
-                if code is not '':
-                        dept, num = get_course_info(code)
-                        listing = gen_almanac_listing(code=code,dept=dept,num=num)
-                        record = get_hist(dept,num)
-                elif ge.strip() != 'ANY':
-                		listing = gen_almanac_listing(ge=ge)
-                elif dept.strip() is not 'ALL' and num is not '':
-                        listing = gen_almanac_listing(dept=dept,num=num)
-                        record = get_hist(dept,num)
-                elif dept.strip() is not 'ALL' and num is '':
-                        listing = gen_almanac_listing(dept=dept)
+            code = request.form['CourseCodes']
+            dept = request.form['Dept']
+            num = request.form['CourseNum']
+            ge = request.form['Breadth']
+            if code is not '':
+                dept, num = get_course_info(code)
+                listing = gen_almanac_listing(code=code,dept=dept,num=num)
+                record = get_hist(dept,num)
+            elif ge.strip() != 'ANY':
+                listing = gen_almanac_listing(ge=ge)
+            elif dept.strip() is not 'ALL' and num is not '':
+                listing = gen_almanac_listing(dept=dept,num=num)
+                record = get_hist(dept,num)
+            elif dept.strip() is not 'ALL' and num is '':
+                listing = gen_almanac_listing(dept=dept)
+
         client_agent = request.user_agent
         if client_agent.browser.strip() == 'msie' or 'Edge' in client_agent.string:
-        	on_edge = 'O Yes'
+            on_edge = 'O Yes'
+
         return render_template('test.html', record=record, listing=listing, on_edge=on_edge)
 
-@app.route('/_new')
+@app.route('/_test')
 def test():
 	return render_template('index1.html')
 
-@app.route('/_test')
+@app.route('/_old_test')
 def new_test():
 	return render_template('index.html')
 

@@ -12,185 +12,231 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
 	<script src='{{ url_for('static', filename='fullcalendar/lib/moment.min.js') }}'></script>
 	<script src='{{ url_for('static', filename='fullcalendar/fullcalendar.js') }}'></script>
-	<script>
+  <script>
+    var current = 0;
+    var genesis = moment('2018-11-05');
+
 		$( document ).ready(function() {
 		  $('#calendar').fullCalendar({
-			defaultView: 'agendaWeek',
-			weekends: false,
-			allDaySlot: false,
-			minTime: '07:00:00',
-			maxTime: '22:00:00',
-			nowIndicator: false,
-			columnHeaderFormat: 'dddd',
-			height: 'parent'
+        defaultView: 'agendaWeek',
+        weekends: false,
+        allDaySlot: false,
+        minTime: '07:00:00',
+        maxTime: '22:00:00',
+        defaultDate: genesis.format(),
+        nowIndicator: false,
+        height: 'parent',
+        columnHeaderFormat: 'dddd', // Displays spelled out day name, but no date
+        header: {
+            left: 'title',
+            center: '',
+            right: 'lastSch,nextSch'
+        },
+        titleFormat: '[Schedule 1 of 4]',
+        customButtons: {
+            lastSch: {
+                text: 'Last',
+                icon: 'left-single-arrow',
+                click: function() {
+                  current = (current+3)%4;
+                  $('#calendar').fullCalendar('option', 'titleFormat', '[Schedule '+(current+1)+' of 4]');
+                }
+            },
+            nextSch: {
+                text: 'Next',
+                icon: 'right-single-arrow',
+                click: function() {
+                  current = (current+1)%4;
+                  $('#calendar').fullCalendar('option', 'titleFormat', '[Schedule '+(current+1)+' of 4]');
+                }
+            }
+        },
+        eventSources: [
+          {
+            events: [
+                  {
+                    title: 'Test 1',
+                    start: '2018-11-08T09:30:00',
+                    end: '2018-11-08T11:00:00'
+                  },
+                  {
+                    title: 'Test2',
+                    start: '2018-11-07T12:30:00',
+                    end: '2018-11-07T14:00:00'
+                  }
+                ],
+                color: 'yellow',   // an option!
+            },
+
+            {
+              events: [
+                    {
+                      title: 'Test 1',
+                      start: '2018-11-06T09:30:00',
+                      end: '2018-11-06T11:00:00'
+                    },
+                    {
+                      title: 'Test2',
+                      start: '2018-11-05T12:30:00',
+                      end: '2018-11-05T14:00:00'
+                    }
+                  ],
+                  color: 'green',   // an option!
+              }
+          ]
 		  })
 		});
 	</script>
 
     <style>
-    *{padding:0;margin:0;}
+      *{padding:0;margin:0;}
 
-	html { height: 100%; }
+    	html { height: 100%; }
 
-    body{
-        font-family:Verdana, Geneva, sans-serif;
-        font-size:18px;
-        background-color:#FFF;
-        height: 100%;
-		margin: 0;
-    }
+      body{
+          font-family:Verdana, Geneva, sans-serif;
+          font-size:18px;
+          background-color:#FFF;
+          height: 100%;
+  		margin: 0;
+      }
 
+      .fc-today
+      {
+        background-color:inherit !important;
+      }
 
+      .my-float{
+          margin-top:22px;
+      }
 
-    .my-float{
-        margin-top:22px;
-    }
+  	    #search{
+  			height: 100%;
+  		    width: 100%;
+  		    float: left;
+  		    position: relative;
+  	    }
 
-	    #search{
-			height: 100%;
-		    width: 100%;
-		    float: left;
-		    position: relative;
-	    }
+      #right {
+          width: 50%;
+          float: right;
+  		height: 100%;
+      }
 
-    #right {
-        width: 50%;
-        float: right;
-		height: 100%;
-    }
+      #left {
+          width: 50%;
+          height: 100%;
+          float: left;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch; /* for iOS */
+      }
 
-    #left {
-        width: 50%;
-        height: 100%;
-        float: left;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch; /* for iOS */
-    }
-/*
-    #upper {
-        overflow: auto;
-        padding: 5px;
-    }
+      .tab {
+          overflow: hidden;
+          border: 1px solid #FFF;
+          background-color: #f1f1f1;
+      }
 
-    #upper h1 {
-        line-height: 20px;
-    }
+      /* Style the buttons inside the tab */
+      .tab button {
+          background-color: inherit;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 5px 10px;
+          transition: 0.3s;
+          font-size: 14px;
+      }
 
-		#upper #main-nav {
-        float: left;
-    }
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+          background-color: #ddd;
+      }
 
-    #upper #cal-ctrl {
-        float: right;
-    }
-		*/
-	    /* Style the tab */
-.tab {
-    overflow: hidden;
-    border: 1px solid #FFF;
-    background-color: #f1f1f1;
-}
+      /* Create an active/current tablink class */
+      .tab button.active {
+          background-color: #FFF;
+      }
 
-/* Style the buttons inside the tab */
-.tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: 0.3s;
-    font-size: 14px;
-}
+      /* Style the tab content */
+      .tabcontent {
+          display: none;
+          padding: 6px 12px;
+          border-top: none;
+      }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
-    background-color: #ddd;
-}
+      /* Style the close button */
+      .topright {
+          float: right;
+          cursor: pointer;
+          font-size: 28px;
+      }
 
-/* Create an active/current tablink class */
-.tab button.active {
-    background-color: #FFF;
-}
+      .topright:hover {color: red;}
 
-/* Style the tab content */
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border-top: none;
-}
+      .btn {
+        display:block;
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+       background-color:#0064a4;
+      	color:#ffd200;
+      	border-radius:100%;
+      	text-align:center;
+      	display: inline-flex;
+      	flex-direction: column;
+      	justify-content: center;
+      	align-items: center;
+      	box-shadow: 2px 2px 3px #999;
+      }
 
-/* Style the close button */
-.topright {
-    float: right;
-    cursor: pointer;
-    font-size: 28px;
-}
+      .float{
+              position:fixed;
+              width:100px;
+              height:100px;
+              bottom:40px;
+              left:40px;
+              background-color:#0064a4;
+              color:#ffd200;
+              border-radius:100%;
+              text-align:center;
+              display: inline-flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              box-shadow: 2px 2px 3px #999;
+          }
 
-.topright:hover {color: red;}
-
-.btn {
-  display:block;
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
- background-color:#0064a4;
-	color:#ffd200;
-	border-radius:100%;
-	text-align:center;
-	display: inline-flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	box-shadow: 2px 2px 3px #999;
-}
-
-.float{
-        position:fixed;
-        width:100px;
-        height:100px;
-        bottom:40px;
-        left:40px;
-        background-color:#0064a4;
-        color:#ffd200;
-        border-radius:100%;
-        text-align:center;
-        display: inline-flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 2px 2px 3px #999;
-    }
-
-/*Andrew's CSS  */
-/*TAB CSS*/
-.leftTab {
-    overflow: hidden;
-    background-color: #f1f1f1;
-}
-.leftTab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 5px 10px;
- 	transition: 0.3s;
-}
-.leftTab button:hover {
-    background-color: #ddd;
-}
-.leftTab button.active {
-    background-color: #FFF;
-}
-.leftTabContent {
-	height: 94%;
-	width: 100%;
-	float: left;
-	position: relative;
-    display: none;
-    border-top: none;
-}
+      /*Andrew's CSS  */
+      /*TAB CSS*/
+      .leftTab {
+          overflow: hidden;
+          background-color: #f1f1f1;
+      }
+      .leftTab button {
+          background-color: inherit;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 5px 10px;
+       	transition: 0.3s;
+      }
+      .leftTab button:hover {
+          background-color: #ddd;
+      }
+      .leftTab button.active {
+          background-color: #FFF;
+      }
+      .leftTabContent {
+      	height: 94%;
+      	width: 100%;
+      	float: left;
+      	position: relative;
+          display: none;
+          border-top: none;
+      }
     </style>
 </head>
 
@@ -202,8 +248,8 @@
 	<!--    <h2>Scheduling</h2> -->
       <div class="leftTab">
         <button class="leftTabLink" onclick="openSchedule(event, 'Classes')" id="defaultOpen">Classes</button>
-  		<button class="leftTabLink" onclick="openSchedule(event, 'PersonalEvents')">Personal Events</button>
-		<button class="leftTabLink" onclick="openSchedule(event, 'CompSch')">Schedule</button>
+    		<button class="leftTabLink" onclick="openSchedule(event, 'PersonalEvents')">Personal Events</button>
+    		<button class="leftTabLink" onclick="openSchedule(event, 'CompSch')">Schedule</button>
       </div>
       <div id="Classes" class="leftTabContent">
 		<iframe src="{{url_for('soc')}}" id="search" frameborder="0"></iframe>
@@ -220,42 +266,6 @@
 
 
     <div id="right">
-	    <!--
-	    <div class="tab">
-		  <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">London</button>
-		  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-		  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
-		  </div>
-
-		<div id="London" class="tabcontent">
-		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
-		  <h3>London</h3>
-		  <p>London is the capital of England.</p>
-		</div>
-
-		<div id="Paris" class="tabcontent">
-		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
-		  <h3>Paris</h3>
-		  <p>Paris is the capital of France.</p>
-		</div>
-
-		<div id="Tokyo" class="tabcontent">
-		  <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
-		  <h3>Tokyo</h3>
-		  <p>Tokyo is the capital of Japan.</p>
-		</div>
-      <div id="upper">
-        <div id="main-nav">
-            <h1>The AntAlmanac</h1>
-        </div>
-        <div id="cal-ctrl">
-          <button type="button" onclick="javascript:print()">Print</button>
-          <button type="button" id="save-btn">Save</button>
-          <button type="button" id="load-btn">Load</button>
-          <button type="button" id="clear-cal-btn">Clear</button>
-          <button type="button" id="resize-btn">Size</button>
-        </div>
-      </div>-->
       <div style="height:100%;" id="calendar"></div>
     </div>
 
