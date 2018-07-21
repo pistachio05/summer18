@@ -393,6 +393,7 @@
     <br>
    	
 	<div id="loading"><iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
+	
 	<div id="content">
     {% if on_edge %}
     	<p><i>***Graphs are weird or not interactive?***
@@ -401,13 +402,13 @@
 
     {% if listing %}
     	<table>
-    		<button id="graphs">SHOW ME GRAPHS</button>
+    		<button id="graphs" onclick="showG()">SHOW ME GRAPHS</button>
     	{% for h,g,dept,num in listing %}
     		{{ h | safe}}
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
-	    		<embed type="image/svg+xml" src= {{ g|safe }} />
+	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
 	    	{% endif %}
 			</td>
 		</tr>
@@ -451,6 +452,14 @@ function getCourseHist(this_dept,this_num) {
     $("#"+this_dept+this_num).load("/_course_hist #record", {'dept':this_dept, 'num':this_num}, function(){
 	$("#"+this_dept+this_num+"loading").hide();
 });
+}
+
+function showG()
+{
+var a = document.createElement('embed');
+a.setAttribute('type',"image/svg+xml");
+a.setAttribute('src',"{{ g|safe }}");
+document.getElementById("content").appendChild(a);
 }
 
 $(document).ready(function() {
