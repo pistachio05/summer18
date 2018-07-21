@@ -401,6 +401,7 @@
 
     {% if listing %}
     	<table>
+    		<button id="graphs">SHOW ME GRAPHS</button>
     	{% for h,g,dept,num in listing %}
     		{{ h | safe}}
     		{% if on_edge %}
