@@ -457,10 +457,13 @@ function getCourseHist(this_dept,this_num) {
 
 function showG()
 {
+
+a$('#content').prepend('<img id="theImg" src="http://www.arts.uci.edu/sites/default/files/Arts%20Chat%20Small%20Logo.jpg" />')
+
 var a = document.createElement('embed');
 a.setAttribute('type',"image/svg+xml");
 a.setAttribute('src',"http://www.arts.uci.edu/sites/default/files/Arts%20Chat%20Small%20Logo.jpg");
-document.getElementById("content").appendChild(a);
+
 }
 
 $(document).ready(function() {
