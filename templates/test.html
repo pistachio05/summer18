@@ -402,12 +402,13 @@
 
     {% if listing %}
     	<table>
-    		<button id="graphs" onclick="showG()">SHOW ME GRAPHS</button>
+    		<td>
     	{% for h,g,dept,num in listing %}
     		{{ h | safe}}
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
+    		<button id="graphs" onclick="showG()">SHOW ME GRAPHS</button>
 	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
 	    	{% endif %}
 			</td>
@@ -458,7 +459,7 @@ function showG()
 {
 var a = document.createElement('embed');
 a.setAttribute('type',"image/svg+xml");
-a.setAttribute('src',"{{ g|safe }}");
+a.setAttribute('src',"http://www.arts.uci.edu/sites/default/files/Arts%20Chat%20Small%20Logo.jpg");
 document.getElementById("content").appendChild(a);
 }
 
