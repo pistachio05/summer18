@@ -178,16 +178,21 @@ def _db():
 
 @app.route('/_course_hist', methods=['GET','POST'])
 def _course_hist():
-	record = None
-	if request.method == 'POST':
-		dept = request.form['dept']
-		num = request.form['num']
-		record=get_hist(js_decode(dept),num)
-	return render_template('course_hist.html',record=record)
+    record = None
+    print('will this work?')
+
+    client_agent = request.user_agent
+    if client_agent.browser.strip() == 'msie' or 'Edge' in client_agent.string:
+        print('LMAO THIS WORKS!')
+
+    if request.method == 'POST':
+        dept = request.form['dept']
+        num = request.form['num']
+        record=get_hist(js_decode(dept),num)
+    return render_template('course_hist.html',record=record)
 
 @app.route('/soc', methods=['GET', 'POST'])
 def soc():
-    print('hello world')
     if request.method == 'GET':
         with urllib.request.urlopen('https://www.reg.uci.edu/perl/WebSoc') as src:
             soup = bs.BeautifulSoup(src, 'lxml')

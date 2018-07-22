@@ -393,7 +393,6 @@
     <br>
    	
 	<div id="loading"><iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
-	
 	<div id="content">
     {% if on_edge %}
     	<p><i>***Graphs are weird or not interactive?***
@@ -402,14 +401,12 @@
 
     {% if listing %}
     	<table>
-    		<td>
     	{% for h,g,dept,num in listing %}
     		{{ h | safe}}
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
-    		<button id="graphs" >SHOW ME GRAPH</button>
-	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
+	    		<embed type="image/svg+xml" src= {{ g|safe }} />
 	    	{% endif %}
 			</td>
 		</tr>
@@ -454,16 +451,6 @@ function getCourseHist(this_dept,this_num) {
 	$("#"+this_dept+this_num+"loading").hide();
 });
 }
-
-/*function showG()
-{
-var a = document.createElement('embed');
-a.setAttribute('type',"image/svg+xml");
-a.setAttribute('src',"http://www.arts.uci.edu/sites/default/files/Arts%20Chat%20Small%20Logo.jpg");
-$("#content").append(a);
-
-}
-*/
 
 $(document).ready(function() {
     $(".loadingDiv").hide();

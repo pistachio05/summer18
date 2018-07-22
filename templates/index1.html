@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>AntAlamanac: Poor Peter's AntAlamanac</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>AntAlamanac: Poor Peter's AntAlamanac</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link rel='stylesheet' href='{{ url_for('static', filename='fullcalendar/fullcalendar.css') }}' />
@@ -16,6 +16,15 @@
     var current = 0;
     var genesis = moment('2018-11-05');
 
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
 		$( document ).ready(function() {
 		  $('#calendar').fullCalendar({
         defaultView: 'agendaWeek',
@@ -26,6 +35,7 @@
         defaultDate: genesis.format(),
         nowIndicator: false,
         height: 'parent',
+        scrollTime: '08:30:00',
         columnHeaderFormat: 'dddd', // Displays spelled out day name, but no date
         header: {
             left: 'title',
@@ -51,41 +61,150 @@
                 }
             }
         },
-        eventSources: [
-          {
-            events: [
-                  {
-                    title: 'Test 1',
-                    start: '2018-11-08T09:30:00',
-                    end: '2018-11-08T11:00:00'
-                  },
-                  {
-                    title: 'Test2',
-                    start: '2018-11-07T12:30:00',
-                    end: '2018-11-07T14:00:00'
-                  }
-                ],
-                color: 'yellow',   // an option!
-            },
+        eventClick: function(clicked, jsEvent, view) {
+          $('#calendar').fullCalendar('removeEvents', function(event){
+            return event.code == clicked.code;
+          });
+        }
 
-            {
-              events: [
+		  });
+
+      $('#search').bind('load', function(){
+        var $listingContext = $('table', $('#search').contents());
+        var $courseRow = $("tr[valign*='top']:not([bgcolor='#fff0ff'])", $listingContext);
+
+          // FIXME: hover() deprecated
+          $courseRow.hover(
+            function() {
+              $(this).css({'color': '#ff0000', 'cursor': 'pointer'});
+            },
+            function() {
+              $(this).css({'color': '#000000', 'cursor': 'default'});
+            }
+          );
+
+          $courseRow.on('click', function() {
+            var timeString = $(this).find('td').eq(5).html();
+            if(timeString.indexOf('TBA') != -1) {
+              alert('Course is TBA');
+              return;
+            }
+            var courseCode = $(this).find('td').eq(0).text();
+            var courseName = $.trim( $(this).prevAll().find('.CourseTitle:last').html().split('<font')[0].replace(/&nbsp;/g, '') )
+            var courseTimes = new CourseTimeStringParser(timeString)
+            var roomString = $(this).find('td').eq(6).html();
+            // var rooms = parseRoomString(roomString);
+
+            // Iterate through course times (a course may have different meeting times)
+
+            var eventSources = [];
+            var randC = getRandomColor();
+
+            for(var i in courseTimes) {
+              var parsed = courseTimes[i];
+
+              // if (i in rooms && rooms[i].length > 0) {
+              //     var room = rooms[i];
+              // } else {
+              //     // Is there a possibility that there is only one room listed for all times (in the case of multiple times)?
+              //     var room = "TBA";
+              // }
+
+              for(var i in parsed.days) {
+                var day = parsed.days[i];
+
+                source = {
+                  events: [
                     {
-                      title: 'Test 1',
-                      start: '2018-11-06T09:30:00',
-                      end: '2018-11-06T11:00:00'
-                    },
-                    {
-                      title: 'Test2',
-                      start: '2018-11-05T12:30:00',
-                      end: '2018-11-05T14:00:00'
+                      title: courseName + '(' + courseCode + ')',
+                      code: courseCode,
+                      start: '2018-11-'+ day + 'T' + parseSingleDigit(parsed.beginHour) + ':' + parseSingleDigit(parsed.beginMin) + ':00',
+                      end: '2018-11-' + day + 'T' + parseSingleDigit(parsed.endHour) + ':' + parseSingleDigit(parsed.endMin) + ':00'
                     }
                   ],
-                  color: 'green',   // an option!
+                    color: randC
+                }
+
+                $('#calendar').fullCalendar('addEventSource', source );
               }
-          ]
-		  })
+            }
+          });
+      });
 		});
+
+    function parseSingleDigit(integer){
+      if (integer < 10){
+        return '0' + integer.toString();
+      } else {
+        return integer.toString();
+      }
+    }
+
+    function CourseTimeStringParser(courseString) {
+    	var courseTimes = []
+    	var splitTimes = courseString.split('<br>');
+    	for(var i in splitTimes) {
+        courseTimes.push( ParsedCourseTime(splitTimes[i]) )
+    	}
+    	return courseTimes;
+    }
+
+    function ParsedCourseTime(timeString) {
+    	var MAX_DURATION = 5;
+
+    	var dashedSplit = timeString.split('-'); // ex. ["Th &nbsp; 12:30", "12:50p "]
+    	var dayBeginSplit = dashedSplit[0].split('&nbsp;'); // ex. ["Th ", " 12:30"]
+
+    	var beginTime = $.trim( dayBeginSplit[dayBeginSplit.length - 1] ); // ex. "6:00"
+    	var endTime   = $.trim( dashedSplit[1] ); // "6:50p"
+
+    	var beginHour = parseInt( beginTime.split(':')[0] );
+    	var beginMin  = parseInt( beginTime.split(':')[1] );
+
+    	var endHour = parseInt( endTime.split(':')[0] );
+    	var endMin = parseInt( endTime.split(':')[1].replace('p', '') );
+    	var isPm = endTime.indexOf('p') != -1;
+
+    	var days = [];
+
+    	if(timeString.indexOf('M') != -1) {	days.push('05'); }
+    	if(timeString.indexOf('Tu') != -1) { days.push('06'); }
+    	if(timeString.indexOf('W') != -1) {	days.push('07'); }
+    	if(timeString.indexOf('Th') != -1) { days.push('08'); }
+    	if(timeString.indexOf('F') != -1) {	days.push('09'); }
+
+    	if(isPm) {
+    		var military = endHour == 12 ? 12 : endHour + 12
+
+    		if(military - beginHour > MAX_DURATION) {
+    			beginHour += 12;
+    		}
+
+    		if(endHour != 12) {
+    			endHour += 12;
+    		}
+      }
+    	return {
+    		'beginHour': beginHour,
+    		'beginMin': beginMin,
+    		'endHour': endHour,
+    		'endMin': endMin,
+    		'days': days
+    	}
+    }
+
+    function parseRoomString(roomString) {
+      roomString = roomString.trim();
+      // This will match non-markup text that is followed by the opening of a tag,
+      // or with the ending of the string
+      var regex = /(\w|\s)+(?=<|$)/g;
+      var info = roomString.match(regex) || [];
+      return info;
+    }
+
+
+
+
 	</script>
 
     <style>
@@ -100,6 +219,7 @@
           height: 100%;
   		margin: 0;
       }
+      /*fullcalendar modifications*/
 
       .fc-today
       {
@@ -177,8 +297,8 @@
 
       .btn {
         display:block;
-        height: 100px;
-        width: 100px;
+        height: 80px;
+        width: 80px;
         border-radius: 50%;
        background-color:#0064a4;
       	color:#ffd200;
@@ -188,13 +308,12 @@
       	flex-direction: column;
       	justify-content: center;
       	align-items: center;
-      	box-shadow: 2px 2px 3px #999;
       }
 
       .float{
               position:fixed;
-              width:100px;
-              height:100px;
+              width: 80px;
+              height: 80px;
               bottom:40px;
               left:40px;
               background-color:#0064a4;
@@ -205,7 +324,6 @@
               flex-direction: column;
               justify-content: center;
               align-items: center;
-              box-shadow: 2px 2px 3px #999;
           }
 
       /*Andrew's CSS  */
@@ -237,6 +355,27 @@
           display: none;
           border-top: none;
       }
+      /*days of week  */
+      .weekDays-selector input {
+        display: none!important;
+      }
+
+      .weekDays-selector input[type=checkbox] + label {
+        display: inline-block;
+        border-radius: 6px;
+        background: #dddddd;
+        height: 40px;
+        width: 30px;
+        margin-right: 3px;
+        line-height: 40px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .weekDays-selector input[type=checkbox]:checked + label {
+        background: #2AD705;
+        color: #ffffff;
+      }
     </style>
 </head>
 
@@ -257,6 +396,22 @@
       <div id="PersonalEvents" class="leftTabContent">
         <h3>Personal Events</h3>
         <p>Add your personal events here.</p>
+        <div class="weekDays-selector">
+          <input type="checkbox" id="weekday-mon" class="weekday" />
+          <label for="weekday-mon">M</label>
+          <input type="checkbox" id="weekday-tue" class="weekday" />
+          <label for="weekday-tue">T</label>
+          <input type="checkbox" id="weekday-wed" class="weekday" />
+          <label for="weekday-wed">W</label>
+          <input type="checkbox" id="weekday-thu" class="weekday" />
+          <label for="weekday-thu">T</label>
+          <input type="checkbox" id="weekday-fri" class="weekday" />
+          <label for="weekday-fri">F</label>
+          <input type="checkbox" id="weekday-sat" class="weekday" />
+          <label for="weekday-sat">S</label>
+          <input type="checkbox" id="weekday-sun" class="weekday" />
+          <label for="weekday-sun">S</label>
+        </div>
       </div>
       <div id="CompSch" class="leftTabContent">
         <h3>Schedule</h3>
