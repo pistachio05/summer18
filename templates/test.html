@@ -407,7 +407,7 @@
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
 	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
-	    		<button id="graph">Graph</button>
+	    		<button id="graph" onclick="pygalGraph()">Graph</button>
 	    	{% endif %}
 			</td>
 		</tr>
@@ -450,6 +450,8 @@ function getCourseHist(this_dept,this_num) {
     $("#"+this_dept+this_num+"loading").show();
     $("#"+this_dept+this_num).load("/_course_hist #record", {'dept':this_dept, 'num':this_num}, function(){
 	$("#"+this_dept+this_num+"loading").hide();
+
+	$('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
 });
 }
 
