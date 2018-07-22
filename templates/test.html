@@ -13,10 +13,11 @@
 
 
 <script type="text/javascript">// <![CDATA[
-function pygalGraph()
-{
-$('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
-}
+
+$( "#graph" ).click(function() {
+  $('#forGraph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
+});
+
         function preloader(){
             document.getElementById("loading").style.display = "none";
             document.getElementById("content").style.display = "block";
@@ -410,8 +411,9 @@ $('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
+    		<button id="graph">Graph</button>
+    		<div id="forGraph"> </div>
 	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
-	    		<button id="graph" onclick="pygalGraph()">Graph</button>
 	    	{% endif %}
 			</td>
 		</tr>
@@ -460,10 +462,9 @@ function getCourseHist(this_dept,this_num) {
 }
 
 // making img tag on button click jquery
-function pygalGraph()
-{
-$('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
-}
+$( "#graph" ).click(function() {
+  $('#forGraph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
+});
 
 $(document).ready(function() 
 {
