@@ -381,6 +381,10 @@
           display: none;
           border-top: none;
       }
+      .leftTabLink{
+        color: blue;
+      }
+      
     </style>
 </head>
 
@@ -388,9 +392,9 @@
 
 
 <body>
-    <div id="left">
+    <div id="left" >
 	<!--    <h2>Scheduling</h2> -->
-      <div class="leftTab">
+      <div class="leftTab navbar navbar-dark bg-dark" >
         <button class="leftTabLink" onclick="openSchedule(event, 'Classes')" id="defaultOpen">Classes</button>
     		<button class="leftTabLink" onclick="openSchedule(event, 'PersonalEvents')">Personal Events</button>
     		<button class="leftTabLink" onclick="openSchedule(event, 'CompSch')">Schedule</button>
@@ -460,6 +464,12 @@
 			document.getElementById(cityName).style.display = "block";
 			evt.currentTarget.className += " active";
 		}
+
+
+
+
+
+
 
     function openSchedule(evt, cityName) {
         var i, leftTabContent, leftTabLink;
