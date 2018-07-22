@@ -14,9 +14,6 @@
 
 <script type="text/javascript">// <![CDATA[
 
-$( "#graph" ).click(function() {
-  $('#forGraph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
-});
 
         function preloader(){
             document.getElementById("loading").style.display = "none";
@@ -412,8 +409,10 @@ $( "#graph" ).click(function() {
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
     		<button id="graph">Graph</button>
-    		<div id="forGraph"> </div>
-	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
+    		<div id="forGraph"> 
+    			<embed type="image/svg+xml" src= {{ g|safe }} /> 
+    		</div>
+	    		
 	    	{% endif %}
 			</td>
 		</tr>
@@ -460,6 +459,10 @@ function getCourseHist(this_dept,this_num) {
 	$('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
 });
 }
+
+$( "#graph" ).click(function() {
+    $( "#forGraph" ).toggle();
+});
 
 // making img tag on button click jquery
 $( "#graph" ).click(function() {
