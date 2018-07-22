@@ -407,7 +407,7 @@
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
 	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
-	    		<img src= {{ g|safe }} alt="chart title"/>
+	    		<button id="graph">Graph</button>
 	    	{% endif %}
 			</td>
 		</tr>
@@ -453,6 +453,11 @@ function getCourseHist(this_dept,this_num) {
 });
 }
 
+// making img tag on button click jquery
+function pygalGraph()
+{
+$('#graph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
+}
 
 $(document).ready(function() 
 {
