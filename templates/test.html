@@ -408,7 +408,7 @@
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
-    		<button id="graphs" onclick="showG()">SHOW ME GRAPH</button>
+    		<button id="graphs" >SHOW ME GRAPH</button>
 	    		<!--<embed type="image/svg+xml" src= {{ g|safe }} /> -->
 	    	{% endif %}
 			</td>
@@ -455,7 +455,7 @@ function getCourseHist(this_dept,this_num) {
 });
 }
 
-function showG()
+/*function showG()
 {
 var a = document.createElement('embed');
 a.setAttribute('type',"image/svg+xml");
@@ -463,6 +463,7 @@ a.setAttribute('src',"http://www.arts.uci.edu/sites/default/files/Arts%20Chat%20
 $("#content").append(a);
 
 }
+*/
 
 $(document).ready(function() {
     $(".loadingDiv").hide();
