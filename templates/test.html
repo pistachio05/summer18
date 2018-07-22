@@ -408,9 +408,10 @@
     		{% if on_edge %}
     			<img src= {{ g|safe }} alt="chart title"/>
     		{% else %}
-    		<button id="graph">Graph</button>
-    		<div id="forGraph"> 
+    		<button id="graph" class="btn btn-info">Graph</button>
+    		<div id="forGraph" style="display: none"> 
     			<embed type="image/svg+xml" src= {{ g|safe }} /> 
+    			this is div
     		</div>
 	    		
 	    	{% endif %}
@@ -418,7 +419,7 @@
 		</tr>
 		<tr>
 			<td colspan=16 align="center">
-		<button onclick=getCourseHist("{{dept|safe}}","{{num|safe}}")>Show Past Course Offerings</button>
+		<button  class="btn btn-info" onclick=getCourseHist("{{dept|safe}}","{{num|safe}}")>Show Past Course Offerings</button>
 			</td>
 		</tr>
 		<tr>
@@ -465,9 +466,9 @@ $( "#graph" ).click(function() {
 });
 
 // making img tag on button click jquery
-$( "#graph" ).click(function() {
-  $('#forGraph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
-});
+//$( "#graph" ).click(function() {
+  //$('#forGraph').prepend('<img src= {{ g|safe }} alt="chart title"/>');
+//});
 
 $(document).ready(function() 
 {
